@@ -1,15 +1,47 @@
 package com.funcoming.Learn
 
+import org.apache.hadoop.hbase.{HBaseConfiguration, HColumnDescriptor, HTableDescriptor, TableName}
+import org.apache.hadoop.hbase.client.{ConnectionFactory, Put}
+import org.apache.hadoop.hbase.util.{Bytes, Writables}
+
 /**
- * @author ${user.name}
- */
+  * @author ${user.name}
+  */
 object App {
-  
-  def foo(x : Array[String]) = x.foldLeft("")((a,b) => a + b)
-  
-  def main(args : Array[String]) {
-    println( "Hello World!" )
+
+  def foo(x: Array[String]) = x.foldLeft("")((a, b) => a + b)
+
+  def main(args: Array[String]) {
+    println("Hello World!")
     println("concat arguments = " + foo(args))
+    val configuration = HBaseConfiguration.create()
+    val connection = ConnectionFactory.createConnection(configuration)
+    //    第二步就是：获取管理员权限
+    val admin = connection.getAdmin
+    val tabledesc = new HTableDescriptor(TableName.valueOf("myLittleHbaseTable"))
+    val columnDescriptor = new HColumnDescriptor(Bytes.toBytes("columnFamilymylittleFamily"))
+    tabledesc.addFamily(columnDescriptor)
+    admin.createTable(tabledesc)
+    //    val listtables = admin.listTables()
+    //    val listtables = admin.listTableNames()
+    //    listtables.foreach(println)
+    val table = connection.getTable(TableName.valueOf("myLittleHbaseTable"))
+
+    val put = new Put(Bytes.toBytes("rowkey1mylittleRow"))
+    put.addColumn(Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("quanlifier--lie"), Bytes.toBytes("valuezhi"))
+    table.put(put)
+    //------------完成了数据的插入。。
+    try {
+
+    } catch {
+      case ex: Exception => {
+
+      }
+    } finally {
+
+    }
+
+
   }
 
 }
