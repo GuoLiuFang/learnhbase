@@ -1,7 +1,7 @@
 package com.funcoming.Learn
 
 import org.apache.hadoop.hbase.{HBaseConfiguration, HColumnDescriptor, HTableDescriptor, TableName}
-import org.apache.hadoop.hbase.client.{ConnectionFactory, Put}
+import org.apache.hadoop.hbase.client.{ConnectionFactory, Get, Put}
 import org.apache.hadoop.hbase.util.{Bytes, Writables}
 
 /**
@@ -17,11 +17,11 @@ object App {
     val configuration = HBaseConfiguration.create()
     val connection = ConnectionFactory.createConnection(configuration)
     //    第二步就是：获取管理员权限
-    val admin = connection.getAdmin
-    val tabledesc = new HTableDescriptor(TableName.valueOf("myLittleHbaseTable"))
-    val columnDescriptor = new HColumnDescriptor(Bytes.toBytes("columnFamilymylittleFamily"))
-    tabledesc.addFamily(columnDescriptor)
-    admin.createTable(tabledesc)
+    //    val admin = connection.getAdmin
+    //    val tabledesc = new HTableDescriptor(TableName.valueOf("myLittleHbaseTable"))
+    //    val columnDescriptor = new HColumnDescriptor(Bytes.toBytes("columnFamilymylittleFamily"))
+    //    tabledesc.addFamily(columnDescriptor)
+    //    admin.createTable(tabledesc)
     //    val listtables = admin.listTables()
     //    val listtables = admin.listTableNames()
     //    listtables.foreach(println)
@@ -31,6 +31,12 @@ object App {
     put.addColumn(Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("quanlifier--lie"), Bytes.toBytes("valuezhi"))
     table.put(put)
     //------------完成了数据的插入。。
+    //    正好测试下，相同数据能不能插入的问题
+    val get = new Get(Bytes.toBytes("rowkey1mylittleRow"))
+    val result = table.get(get)
+    val resultBytes = result.getValue(Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("quanlifier--lie"))
+    println("rowkey1mylittleRow--->columnFamilymylittleFamily--->quanlifier的名字为" + Bytes.toString(resultBytes))
+
     try {
 
     } catch {
