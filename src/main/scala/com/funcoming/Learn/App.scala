@@ -1,7 +1,7 @@
 package com.funcoming.Learn
 
 import org.apache.hadoop.hbase.{HBaseConfiguration, HColumnDescriptor, HTableDescriptor, TableName}
-import org.apache.hadoop.hbase.client.{ConnectionFactory, Get, Put}
+import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.{Bytes, Writables}
 
 /**
@@ -36,7 +36,15 @@ object App {
     val result = table.get(get)
     val resultBytes = result.getValue(Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("quanlifier--lie"))
     println("rowkey1mylittleRow--->columnFamilymylittleFamily--->quanlifier的名字为" + Bytes.toString(resultBytes))
+    val scan = new Scan()
+    //    还要 Adorn it with column names...
+    scan.addColumn(Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("quanlifier--lie"))
+    val resultScanner = table.getScanner(scan)
+    val iteratorScan = resultScanner.iterator()
+    while (iteratorScan.hasNext) {
+      println("用scan 获取到的结果", iteratorScan.next)
 
+    }
     try {
 
     } catch {
