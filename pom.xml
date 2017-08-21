@@ -10,13 +10,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <!--<repositories>-->
-    <!--<repository>-->
-    <!--<id>Hortonworks</id>-->
-    <!--<url>http://repo.hortonworks.com/content/repositories/releases/</url>-->
-    <!--</repository>-->
 
-    <!--</repositories>-->
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -29,22 +23,47 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.apache.hbase</groupId>-->
+        <!--<artifactId>hbase-spark</artifactId>-->
+        <!--<version>2.0.0-alpha-1</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>1.2.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>2.0.0-alpha-1</version>
+        </dependency>
+
+        <!--目前一共有两种办法：1.直接使用 maven2.测试 snapshot 的两个版本看看那个好使。。OK，果断开展起来-->
+        <!--安装 jar 包到本地 maven 仓库-->
+        <dependency>
+            <groupId>com.funcoming.externalJar</groupId>
+            <artifactId>spark-assembly-1.6.0.2.4.0.0-169-hadoop2.7.1.2.4.0.0-169</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.funcoming.externalJar</groupId>
+            <artifactId>spark-examples-1.6.0.2.4.0.0-169-hadoop2.7.1.2.4.0.0-169</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.funcoming.externalJar</groupId>
+            <artifactId>hbase-spark-2.0.0-20170607.194658-11</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!--<dependency>-->
-        <!--<groupId>org.apache.hbase</groupId>-->
-        <!--<artifactId>hbase-client</artifactId>-->
-        <!--<version>1.1.2.2.4.0.0-169</version>-->
-        <!--<scope>provided</scope>-->
+        <!--<groupId>com.funcoming.externalJar</groupId>-->
+        <!--<artifactId>hbase-spark-3.0.0-20170706.204923-1</artifactId>-->
+        <!--<version>1.0</version>-->
         <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>commons-beanutils</groupId>-->
-        <!--<artifactId>commons-beanutils</artifactId>-->
-        <!--<version>1.9.3</version>-->
-        <!--</dependency>-->
+
 
     </dependencies>
     <build>

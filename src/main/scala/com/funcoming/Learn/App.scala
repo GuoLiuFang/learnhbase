@@ -1,8 +1,10 @@
 package com.funcoming.Learn
 
-import org.apache.hadoop.hbase.{HBaseConfiguration, HColumnDescriptor, HTableDescriptor, TableName}
+import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
 import org.apache.hadoop.hbase.client._
-import org.apache.hadoop.hbase.util.{Bytes, Writables}
+import org.apache.hadoop.hbase.spark.{HBaseContext}
+import org.apache.hadoop.hbase.util.Bytes
+import org.apache.spark.SparkContext
 
 /**
   * @author ${user.name}
@@ -45,6 +47,32 @@ object App {
       println("用scan 获取到的结果", iteratorScan.next)
 
     }
+    val sparkContext = new SparkContext()
+    //    val hBaseConfiguration = HBaseConfiguration.create()
+    val hBaseContext = new HBaseContext(sparkContext, configuration)
+    val rdd = sparkContext.parallelize(Array(
+      (Bytes.toBytes("rowkey1"),
+        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue1")))),
+      (Bytes.toBytes("rowkey2"),
+        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue2")))),
+      (Bytes.toBytes("rowkey3"),
+        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue3")))),
+      (Bytes.toBytes("rowkey4"),
+        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue4")))),
+      (Bytes.toBytes("rowkey5"),
+        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue5"))))
+    ))
+
+    hBaseContext.bulkPut[(Array[Byte], Array[(Array[Byte], Array[Byte], Array[Byte])])](rdd, TableName.valueOf("myLittleHbaseTable"),
+      (putRecord) => {
+        val put1 = new Put(putRecord._1)
+        putRecord._2.foreach((putValue) => {
+          put1.addColumn(putValue._1, putValue._2, putValue._3)
+        }) //foreach
+        put1
+      })
+
+
     try {
 
     } catch {
