@@ -5,6 +5,8 @@ import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.spark.{HBaseContext}
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
+//这个很关键，能不能用，就看它了。。
+import org.apache.hadoop.hbase.spark.HBaseRDDFunctions._
 
 /**
   * @author ${user.name}
@@ -51,27 +53,42 @@ object App {
     //    val hBaseConfiguration = HBaseConfiguration.create()
     val hBaseContext = new HBaseContext(sparkContext, configuration)
     val rdd = sparkContext.parallelize(Array(
-      (Bytes.toBytes("rowkey1"),
+      (Bytes.toBytes("rowkeyForeachpartion1"),
         Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue1")))),
-      (Bytes.toBytes("rowkey2"),
+      (Bytes.toBytes("rowkeyForeachpartion2"),
         Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue2")))),
-      (Bytes.toBytes("rowkey3"),
+      (Bytes.toBytes("rowkeyForeachpartion3"),
         Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue3")))),
-      (Bytes.toBytes("rowkey4"),
+      (Bytes.toBytes("rowkeyForeachpartion4"),
         Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue4")))),
-      (Bytes.toBytes("rowkey5"),
+      (Bytes.toBytes("rowkeyForeachpartion5"),
         Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue5"))))
     ))
-
-    hBaseContext.bulkPut[(Array[Byte], Array[(Array[Byte], Array[Byte], Array[Byte])])](rdd, TableName.valueOf("myLittleHbaseTable"),
-      (putRecord) => {
-        val put1 = new Put(putRecord._1)
-        putRecord._2.foreach((putValue) => {
+    //这是 HBASE 的 bulkPut方法。。
+    //    hBaseContext.bulkPut[(Array[Byte], Array[(Array[Byte], Array[Byte], Array[Byte])])](rdd, TableName.valueOf("myLittleHbaseTable"),
+    //      (putRecord) => {
+    //        val put1 = new Put(putRecord._1)
+    //        putRecord._2.foreach((putValue) => {
+    //          put1.addColumn(putValue._1, putValue._2, putValue._3)
+    //        }) //foreach
+    //        put1
+    //      })
+    //这是 HBASE 的 hbaseforeachpartition方法
+    rdd.hbaseForeachPartition(hBaseContext, (it, con) => {
+      //  还真是connection
+      val bufferedMutator = con.getBufferedMutator(TableName.valueOf("myLittleHbaseTable"))
+      it.foreach(r => {
+        //        用 rowkey 来实例化..
+        val put1 = new Put(r._1)
+        //        看来要分别搞列族，列，和值。。
+        r._2.foreach((putValue) => {
           put1.addColumn(putValue._1, putValue._2, putValue._3)
-        }) //foreach
-        put1
-      })
-
+        })
+        bufferedMutator.mutate(put1)
+      }) //it.foreach finished
+      bufferedMutator.flush()
+      bufferedMutator.close()
+    })
 
     try {
 
