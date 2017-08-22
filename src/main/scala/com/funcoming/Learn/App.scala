@@ -52,15 +52,15 @@ object App {
     val hBaseContext = new HBaseContext(sparkContext, configuration)
     val rdd = sparkContext.parallelize(Array(
       (Bytes.toBytes("rowkey1"),
-        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue1")))),
+        Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue1")))),
       (Bytes.toBytes("rowkey2"),
-        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue2")))),
+        Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue2")))),
       (Bytes.toBytes("rowkey3"),
-        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue3")))),
+        Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue3")))),
       (Bytes.toBytes("rowkey4"),
-        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue4")))),
+        Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue4")))),
       (Bytes.toBytes("rowkey5"),
-        Array((Bytes.toBytes("columnFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue5"))))
+        Array((Bytes.toBytes("columnFamilymylittleFamily"), Bytes.toBytes("column1"), Bytes.toBytes("columnValue5"))))
     ))
 
     hBaseContext.bulkPut[(Array[Byte], Array[(Array[Byte], Array[Byte], Array[Byte])])](rdd, TableName.valueOf("myLittleHbaseTable"),
