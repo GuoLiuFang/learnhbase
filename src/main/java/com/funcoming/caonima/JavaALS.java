@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spark.examples.mllib;
+package com.funcoming.caonima;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -39,7 +39,6 @@ public final class JavaALS {
   static class ParseRating implements Function<String, Rating> {
     private static final Pattern COMMA = Pattern.compile(",");
 
-    @Override
     public Rating call(String line) {
       String[] tok = COMMA.split(line);
       int x = Integer.parseInt(tok[0]);
@@ -50,7 +49,6 @@ public final class JavaALS {
   }
 
   static class FeaturesToString implements Function<Tuple2<Object, double[]>, String> {
-    @Override
     public String call(Tuple2<Object, double[]> element) {
       return element._1() + "," + Arrays.toString(element._2());
     }
